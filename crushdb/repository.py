@@ -49,6 +49,8 @@ class repository:
     def __del__(self): 
         #Indicator in logs for when teardown happens, conns close      
         logging.info('Repository Uninstantiated') 
+        print("Repository Uninstantiated")
+
 
 
     def connect(self,env="CRUSH_DATABASE_URL", connections=2):

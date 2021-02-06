@@ -18,7 +18,7 @@ try :
     methods=['roi','roi_end']
     measures=['a','b','c','d','e','f','g','h']
 
-    n=250000
+    n=500000
     print(f"Upserting {n} rows of fake data")
 
     for i in range(1,n):    
