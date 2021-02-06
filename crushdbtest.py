@@ -1,49 +1,37 @@
-#from crushdb import repository
-import crushdb
+
+import crushdb  #This is where the DB functionality is connect,insert,update,etc
 import sys
-import logging
+import random
 
-sample=sys.argv[1]
-visit=1
-
-logger = logging.getLogger()
-fhandler = logging.FileHandler(filename=f'crushdbtest.{sample}.log', mode='a')
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-fhandler.setFormatter(formatter)
-logger.addHandler(fhandler)
-logger.setLevel(logging.DEBUG)
-
-logger.info(f'Test Initiated for sample {sample}') 
+sample=random.randint(1,50)
+visit='1'
+print(f"Test case: sample={sample} visit={visit}")
 
 try :
     repo=crushdb.repository()
+    print("Looking for preexisting data")
+    measurementCount = repo.countvals(sample,visit) 
+    if measurementCount>0:           
+        print(f"{measurementCount} values already stored.  Some may be updated but these values are random, so who knows")
+    else:
+        print("...none found")
+    methods=['roi','roi_end']
+    measures=['a','b','c','d','e','f','g','h']
 
-    for i in range(1,2):    
-        for j in range(1,2):        
-            repo.upsert(sample,visit,i,j,'roi','a',124)
-            repo.upsert(sample,visit,i,j,'roi','b',124)
-            repo.upsert(sample,visit,i,j,'roi','c',124)
-            repo.upsert(sample,visit,i,j,'roi','d',124)
-            repo.upsert(sample,visit,i,j,'roi','e',124)
-            repo.upsert(sample,visit,i,j,'roi','f',124)
-            repo.upsert(sample,visit,i,j,'roi','g',124)
-            repo.upsert(sample,visit,i,j,'roi','h',124)
+    n=500000
+    print(f"Upserting {n} rows of fake data")
 
-            repo.upsert(sample,visit,i,j,'roi_end','a',124)
-            repo.upsert(sample,visit,i,j,'roi_end','b',124)
-            repo.upsert(sample,visit,i,j,'roi_end','c',124)
-            repo.upsert(sample,visit,i,j,'roi_end','d',124)
-            repo.upsert(sample,visit,i,j,'roi_end','e',124)
-            repo.upsert(sample,visit,i,j,'roi_end','f',124)
-            repo.upsert(sample,visit,i,j,'roi_end','g',124)
-            repo.upsert(sample,visit,i,j,'roi_end','h',124)
+    for i in range(1,n):    
+        roistart=random.randint(1,5000)  
+        roiend=random.randint(1,5000)  
+        val=random.random()
+        method=methods[random.randint(0,1)]
+        measure=measures[random.randint(0,7)]
+        
+        repo.upsert(sample,visit,roistart,roiend,method,measure,val)
+    print(f"{n} rows upserted")
 except Exception as e:
     print(e)
-    logger.error(f'Test failed ERROR:{e}')
-
-logger.info(f'Test Completed for sample {sample}') 
-
-
 
 
 
