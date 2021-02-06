@@ -1,10 +1,34 @@
-create table if not exists measurements (
+create table if not exists test_measurements (
     sample int,
-    visit int,
+    visit varchar(10),
     roi_start int,
     roi_end int,
     method varchar(7),
-    measurement varchar(20),
+    measurement varchar(40),
     measured numeric(36,20),
+    modified timestamp,
 unique(sample,visit,roi_start,roi_end,method,measurement)
 );
+
+
+CREATE or replace FUNCTION modified() RETURNS TRIGGER
+    LANGUAGE plpgsql
+    AS $$
+BEGIN  
+  NEW.modified := current_timestamp;  
+  RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER trigger_modified
+  BEFORE INSERT OR UPDATE ON test_measurements
+  FOR EACH ROW
+  EXECUTE PROCEDURE modified();
+
+
+/*
+CREATE or replace FUNCTION f_count_measures(in s int, in v int) 
+RETURNS bigint as $$
+    select count(1) from measurements where sample=$1 and visit=$2;
+    $$ LANGUAGE sql;
+*/
